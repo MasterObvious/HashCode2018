@@ -7,5 +7,7 @@ public class Main {
         hello = hello * 2;
 
         System.out.println(hello);
+
+        System.out.println("hello");
     }
 }
