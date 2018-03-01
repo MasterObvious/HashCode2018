@@ -20,6 +20,9 @@ public class Main {
 
     public static Map<Car, List<Ride>> assignRides(List<Car> cars, int numTimeSteps){
         Map<Car, List<Ride>> assignedRides = new HashMap<>();
+        for(Car c: cars){
+            assignedRides.put(c, new ArrayList<>());
+        }
 
         boolean assignedARide = true;
         //iterate timestep until all rides assigned
@@ -65,13 +68,8 @@ public class Main {
 
                     System.out.println("Assigning ride: " + earliestStartRide.rideNumber);
                     //Store data to return
-                    if(assignedRides.containsKey(carToAssign)){
-                        assignedRides.get(carToAssign).add(earliestStartRide);
-                    }else{
-                        List<Ride> carRides =  new ArrayList<>();
-                        carRides.add(earliestStartRide);
-                        assignedRides.put(carToAssign, carRides);
-                    }
+                    assignedRides.get(carToAssign).add(earliestStartRide);
+
                 } else {
                     //break as all rides assigned
                     break;
