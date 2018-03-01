@@ -76,7 +76,7 @@ public class Main {
                 }
                 //remove the ride from lists of potential rides for all cars
                 for (Car c : cars) {
-                    c.sortedRides.remove(earliestStartRide);
+                    c.removeRide(earliestStartRide);
                 }
             }
             System.out.println();
