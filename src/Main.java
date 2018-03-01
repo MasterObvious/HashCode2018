@@ -1,7 +1,5 @@
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,22 +17,56 @@ public class Main {
         System.out.println("hello");
     }
 
-    public static Map<Car, List<Ride>> assignRides(List<Ride> rides, List<Car> cars){
+    public static Map<Car, List<Ride>> assignRides(List<Car> cars){
         int timeStep = 0;
-        //Get list of available cars
-        List<Car> available = new LinkedList<Car>();
-        for(Car c: cars){
-            if(c.freeFrom <= timeStep){
-                available.add(c);
+        Map<Car, List<Ride>> assignedRides = new HashMap<>();
+
+        //iterate timestep until all rides assigned
+        while(!cars.get(0).sortedRides.isEmpty()) {
+            //Get list of available cars
+            List<Car> available = new LinkedList<>();
+            for (Car c : cars) {
+                if (c.freeFrom <= timeStep) {
+                    available.add(c);
+                }
+            }
+
+            //assign cars to rides until none left available
+            while (!available.isEmpty()) {
+                //find optimum ride to assign
+                int shortestDist = Integer.MAX_VALUE;
+                Ride shortestDistRide = null;
+                Car carToAssign = null;
+                for (Car c : available) {
+                    Ride thisShortestDistRide = c.getShortestDistanceRide();
+                    if (thisShortestDistRide.length < shortestDist) {
+                        shortestDist = thisShortestDistRide.length;
+                        shortestDistRide = thisShortestDistRide;
+                        carToAssign = c;
+                    }
+                }
+                //assign this ride
+                if (shortestDistRide != null) {
+                    carToAssign.freeFrom = shortestDist +
+                            carToAssign.distanceFrom(shortestDistRide.fromX, shortestDistRide.fromY);
+
+                    //Store data to return
+                    if(assignedRides.containsKey(carToAssign)){
+                        assignedRides.get(carToAssign).add(shortestDistRide);
+                    }else{
+                        assignedRides.put(carToAssign, new ArrayList<>());
+                    }
+                } else {
+                    //break as all rides assigned
+                    break;
+                }
+
+                //remove the ride from lists of potential rides for all cars
+                for (Car c : cars) {
+                    c.sortedRides.remove(shortestDistRide);
+                }
             }
         }
-
-
-        for(Car c: available){
-
-        }
-
-
-        return null;
+        return assignedRides;
     }
 }
