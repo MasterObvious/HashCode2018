@@ -6,14 +6,15 @@ public class Car {
     public int freeFrom;
     public PriorityQueue<Ride> sortedRides;
 
-
-    public Car(){
+    public Car(Collection<Ride> rides){
         x = 0;
         y = 0;
         freeFrom = 0;
+        sortedRides = new PriorityQueue<>();
+        sortedRides.addAll(rides);
     }
-    public void update(Collection<Ride> rides, Integer timeStep) {
-        sortedRides = sortRides(rides, timeStep);
+    public void update(Integer timeStep) {
+        sortedRides = sortRides(timeStep);
     }
     public Integer distanceFrom(int x, int y) {
         return Math.abs(this.x-x) + Math.abs(this.y-y);
@@ -22,11 +23,11 @@ public class Car {
         return sortedRides.peek();
     }
 
-    private PriorityQueue<Ride> sortRides(Collection<Ride> rides, Integer timeStep) {
+    private PriorityQueue<Ride> sortRides(Integer timeStep) {
         Comparator<Ride> comparator = new RideComparator();
         PriorityQueue<Ride> sorted = new PriorityQueue<>(comparator);
 
-        for(Ride r : rides) {
+        for(Ride r : sortedRides) {
             if(r.earliestStart - timeStep >= this.distanceFrom(r.fromX, r.fromY))
                 sorted.add(r);
         }
