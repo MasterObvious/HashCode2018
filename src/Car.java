@@ -49,6 +49,14 @@ public class Car {
 
         return sorted;
     }
+    public void removeRide(Ride r) {
+        for(RideWithDistance rWD : sortedRides) {
+            if(rWD.ride.rideNumber == r.rideNumber) {
+                sortedRides.remove(rWD);
+                break;
+            }
+        }
+    }
     private class RideComparator implements Comparator<RideWithDistance>{
         @Override
         public int compare(RideWithDistance o1, RideWithDistance o2) {
