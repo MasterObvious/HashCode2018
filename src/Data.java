@@ -84,8 +84,8 @@ public class Data {
             case FILE_A: return "data/a_example.in";
             case FILE_B: return "data/b_should_be_easy.in";
             case FILE_C: return "data/c_no_hurry.in";
-            case FILE_D: return "data/d_metropolis";
-            case FILE_E: return "data/e_high_bonus";
+            case FILE_D: return "data/d_metropolis.in";
+            case FILE_E: return "data/e_high_bonus.in";
         }
         return null;
     }
