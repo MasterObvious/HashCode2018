@@ -12,10 +12,11 @@ public class Data {
 
     public List<Ride> rideList = new ArrayList<>();
 
-    private String mInputFile;
+    private InputType mInType;
 
-    public void  Data(String fileInput) throws IOException {
-        mInputFile = fileInput;
+    public Data(InputType fileType) throws IOException {
+
+        String fileInput = inputFileFromEnum(fileType);
 
         FileReader fileReader = new FileReader(fileInput);
         BufferedReader br = new BufferedReader(fileReader);
@@ -58,18 +59,7 @@ public class Data {
     }
 
     public void output(Map<Car, List<Ride>> result) throws IOException {
-        String outputFile = "";
-        if(mInputFile.contains("a_")){
-            outputFile = "output/a_output.txt";
-        }else if (mInputFile.contains("b_")){
-            outputFile = "output/b_output.txt";
-        }else if (mInputFile.contains("c_")){
-            outputFile = "output/c_output.txt";
-        }else if (mInputFile.contains("d_")){
-            outputFile = "output/d_output.txt";
-        }else if (mInputFile.contains("e_")){
-            outputFile = "output/d_output.txt";
-        }
+        String outputFile = outputFileFromEnum(mInType);
 
         FileWriter fileWriter = new FileWriter(outputFile);
         BufferedWriter bw = new BufferedWriter(fileWriter);
@@ -86,5 +76,29 @@ public class Data {
         }
 
         bw.close();
+    }
+
+    private String inputFileFromEnum(InputType in){
+        mInType= in;
+        switch(in){
+            case FILE_A: return "data/a_example.in";
+            case FILE_B: return "data/b_should_be_easy.in";
+            case FILE_C: return "data/c_no_hurry.in";
+            case FILE_D: return "data/d_metropolis";
+            case FILE_E: return "data/e_high_bonus";
+        }
+        return null;
+    }
+
+    private String outputFileFromEnum(InputType in){
+        switch(in){
+            case FILE_A: return "output/a_output.txt";
+            case FILE_B: return "output/b_output.txt";
+            case FILE_C: return "output/c_output.txt";
+            case FILE_D: return "output/d_output.txt";
+            case FILE_E: return "output/e_output.txt";
+        }
+
+        return null;
     }
 }

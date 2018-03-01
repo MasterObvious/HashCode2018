@@ -17,16 +17,30 @@ public class Main {
         System.out.println("hello");
     }
 
+    private static boolean allCarsFree(List<Car> cars, int timeStep){
+        boolean allFree = true;
+        for(Car c: cars){
+            if(c.freeFrom > timeStep){
+                allFree = false;
+            }
+        }
+        return allFree;
+    }
+
     public static Map<Car, List<Ride>> assignRides(List<Car> cars){
         int timeStep = 0;
         Map<Car, List<Ride>> assignedRides = new HashMap<>();
 
+        boolean assignedARide = true;
         //iterate timestep until all rides assigned
-        while(!cars.get(0).sortedRides.isEmpty()) {
+        while(assignedARide || !allCarsFree(cars, timeStep)) {
+            assignedARide = false;
+
             //Get list of available cars
             List<Car> available = new LinkedList<>();
             for (Car c : cars) {
                 if (c.freeFrom <= timeStep) {
+                    c.update(timeStep);
                     available.add(c);
                 }
             }
@@ -47,6 +61,7 @@ public class Main {
                 }
                 //assign this ride
                 if (shortestDistRide != null) {
+                    assignedARide = true;
                     carToAssign.freeFrom = shortestDist +
                             carToAssign.distanceFrom(shortestDistRide.fromX, shortestDistRide.fromY);
 
