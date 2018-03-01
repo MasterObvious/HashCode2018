@@ -10,4 +10,8 @@ public class Main {
 
         System.out.println("hello");
     }
+
+    public static Map<Car, List<Ride>> assignRides(){
+        return null;
+    }
 }
