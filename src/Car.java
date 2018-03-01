@@ -20,7 +20,7 @@ public class Car {
     public Integer distanceFrom(int x, int y) {
         return Math.abs(this.x-x) + Math.abs(this.y-y);
     }
-    public Ride getShortestDistanceRide() {
+    public Ride getOptimalRide() {
         return sortedRides.peek();
     }
 
