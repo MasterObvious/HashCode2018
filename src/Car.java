@@ -10,7 +10,8 @@ public class Car {
         x = 0;
         y = 0;
         freeFrom = 0;
-        sortedRides = new PriorityQueue<>();
+        Comparator<Ride> comparator = new RideComparator();
+        sortedRides = new PriorityQueue<>(comparator);
         sortedRides.addAll(rides);
     }
     public void update(Integer timeStep) {
