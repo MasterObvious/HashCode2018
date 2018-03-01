@@ -6,7 +6,7 @@ public class Car {
     public int freeFrom;
     public PriorityQueue<Ride> sortedRides;
 
-    public Car(PriorityQueue<Ride> rides){
+    public Car(List<Ride> rides){
         x = 1;
         y = 1;
         freeFrom = 0;
