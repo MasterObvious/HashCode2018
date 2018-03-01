@@ -26,7 +26,10 @@ public class Car {
         return Math.abs(this.x-ride.fromX) + Math.abs(this.y-ride.fromY);
     }
     public Ride getOptimalRide() {
-        return sortedRides.peek().ride;
+        RideWithDistance r = sortedRides.peek();
+        if(r == null)
+            return null;
+        return r.ride;
     }
 
     private PriorityQueue<RideWithDistance> sortRides(Integer timeStep) {
