@@ -43,6 +43,8 @@ public class Data {
             rideList.add(r);
         }
 
+        br.close();
+
         Collections.sort(rideList, new Comparator<Ride>(){
             @Override
             public int compare(Ride o1, Ride o2) {
@@ -62,16 +64,27 @@ public class Data {
         }else if (mInputFile.contains("b_")){
             outputFile = "output/b_output.txt";
         }else if (mInputFile.contains("c_")){
-            outputFile = "output/b_output.txt";
+            outputFile = "output/c_output.txt";
         }else if (mInputFile.contains("d_")){
-            outputFile = "output/b_output.txt";
+            outputFile = "output/d_output.txt";
         }else if (mInputFile.contains("e_")){
-            outputFile = "output/b_output.txt";
+            outputFile = "output/d_output.txt";
         }
 
         FileWriter fileWriter = new FileWriter(outputFile);
         BufferedWriter bw = new BufferedWriter(fileWriter);
 
+        for (Car c : result.keySet()){
+            StringBuilder sb = new StringBuilder();
+            sb.append(result.get(c).size());
+            for (Ride r : result.get(c)){
+                sb.append(" ");
+                sb.append(r.rideNumber);
+            }
+            sb.append("\n");
+            bw.write(sb.toString());
+        }
 
+        bw.close();
     }
 }
