@@ -1,8 +1,5 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public class Data {
 
@@ -15,7 +12,11 @@ public class Data {
 
     public List<Ride> rideList = new ArrayList<>();
 
+    private String mInputFile;
+
     public void  Data(String fileInput) throws IOException {
+        mInputFile = fileInput;
+
         FileReader fileReader = new FileReader(fileInput);
         BufferedReader br = new BufferedReader(fileReader);
 
@@ -41,5 +42,49 @@ public class Data {
             Ride r = new Ride(i, a, b, x, y, s, f);
             rideList.add(r);
         }
+
+        br.close();
+
+        Collections.sort(rideList, new Comparator<Ride>(){
+            @Override
+            public int compare(Ride o1, Ride o2) {
+                if (o1.earliestStart == o2.earliestStart){
+                    return Integer.compare(o1.length, o2.length);
+                }else{
+                    return Integer.compare(o1.earliestStart, o2.earliestStart);
+                }
+            }
+        });
+    }
+
+    public void output(Map<Car, List<Ride>> result) throws IOException {
+        String outputFile = "";
+        if(mInputFile.contains("a_")){
+            outputFile = "output/a_output.txt";
+        }else if (mInputFile.contains("b_")){
+            outputFile = "output/b_output.txt";
+        }else if (mInputFile.contains("c_")){
+            outputFile = "output/c_output.txt";
+        }else if (mInputFile.contains("d_")){
+            outputFile = "output/d_output.txt";
+        }else if (mInputFile.contains("e_")){
+            outputFile = "output/d_output.txt";
+        }
+
+        FileWriter fileWriter = new FileWriter(outputFile);
+        BufferedWriter bw = new BufferedWriter(fileWriter);
+
+        for (Car c : result.keySet()){
+            StringBuilder sb = new StringBuilder();
+            sb.append(result.get(c).size());
+            for (Ride r : result.get(c)){
+                sb.append(" ");
+                sb.append(r.rideNumber);
+            }
+            sb.append("\n");
+            bw.write(sb.toString());
+        }
+
+        bw.close();
     }
 }
