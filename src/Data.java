@@ -1,8 +1,5 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public class Data {
 
@@ -15,7 +12,11 @@ public class Data {
 
     public List<Ride> rideList = new ArrayList<>();
 
+    private String mInputFile;
+
     public void  Data(String fileInput) throws IOException {
+        mInputFile = fileInput;
+
         FileReader fileReader = new FileReader(fileInput);
         BufferedReader br = new BufferedReader(fileReader);
 
@@ -41,5 +42,36 @@ public class Data {
             Ride r = new Ride(i, a, b, x, y, s, f);
             rideList.add(r);
         }
+
+        Collections.sort(rideList, new Comparator<Ride>(){
+            @Override
+            public int compare(Ride o1, Ride o2) {
+                if (o1.earliestStart == o2.earliestStart){
+                    return Integer.compare(o1.length, o2.length);
+                }else{
+                    return Integer.compare(o1.earliestStart, o2.earliestStart);
+                }
+            }
+        });
+    }
+
+    public void output(Map<Car, List<Ride>> result) throws IOException {
+        String outputFile = "";
+        if(mInputFile.contains("a_")){
+            outputFile = "output/a_output.txt";
+        }else if (mInputFile.contains("b_")){
+            outputFile = "output/b_output.txt";
+        }else if (mInputFile.contains("c_")){
+            outputFile = "output/b_output.txt";
+        }else if (mInputFile.contains("d_")){
+            outputFile = "output/b_output.txt";
+        }else if (mInputFile.contains("e_")){
+            outputFile = "output/b_output.txt";
+        }
+
+        FileWriter fileWriter = new FileWriter(outputFile);
+        BufferedWriter bw = new BufferedWriter(fileWriter);
+
+
     }
 }

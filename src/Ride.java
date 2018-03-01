@@ -4,6 +4,7 @@ public class Ride {
     public int toX, toY;
     public int earliestStart;
     public int latestFinish;
+    public int length;
 
     public Ride(int rideNumber, int fromX, int fromY, int toX, int toY,
                 int earliestStart, int latestFinish) {
@@ -14,5 +15,7 @@ public class Ride {
         this.toY = toY;
         this.earliestStart = earliestStart;
         this.latestFinish = latestFinish;
+
+        this.length = Math.abs(this.fromX - this.toX) + Math.abs(this.fromY - this.toY);
     }
 }
