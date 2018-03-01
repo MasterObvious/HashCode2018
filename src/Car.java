@@ -69,7 +69,7 @@ public class Car {
     private class RideComparator implements Comparator<RideWithDistance>{
         @Override
         public int compare(RideWithDistance o1, RideWithDistance o2) {
-            return o1.ride.earliestStart-o2.ride.earliestStart;
+            return (o1.ride.earliestStart + o1.ride.length) - (o2.ride.earliestStart + o2.ride.length);
         }
     }
     private class RideWithDistance {
@@ -83,7 +83,7 @@ public class Car {
     private class RideComparator2 implements Comparator<RideWithDistance>{
         @Override
         public int compare(RideWithDistance o1, RideWithDistance o2) {
-            return o1.distance-o2.distance;
+            return (o1.distance + o1.ride.length) - (o2.distance + o2.ride.length);
         }
     }
 }
