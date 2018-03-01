@@ -1,4 +1,4 @@
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class Car {
     public int x;
@@ -6,13 +6,38 @@ public class Car {
     public int freeFrom;
     public PriorityQueue<Ride> sortedRides;
 
-    public Car(PriorityQueue<Ride> rides){
-        x = 1;
-        y = 1;
+
+    public Car(){
+        x = 0;
+        y = 0;
         freeFrom = 0;
-        sortedRides = sortRides(rides);
+    }
+    public void update(Collection<Ride> rides, Integer timeStep) {
+        sortedRides = sortRides(rides, timeStep);
     }
     public Integer distanceFrom(int x, int y) {
         return Math.abs(this.x-x) + Math.abs(this.y-y);
     }
+    public Ride getShortestDistanceRide() {
+        return sortedRides.peek();
+    }
+
+    private PriorityQueue<Ride> sortRides(Collection<Ride> rides, Integer timeStep) {
+        Comparator<Ride> comparator = new RideComparator();
+        PriorityQueue<Ride> sorted = new PriorityQueue<>(comparator);
+
+        for(Ride r : rides) {
+            if(r.earliestStart - timeStep >= this.distanceFrom(r.fromX, r.fromY))
+                sorted.add(r);
+        }
+
+        return sorted;
+    }
+    private class RideComparator implements Comparator<Ride>{
+        @Override
+        public int compare(Ride o1, Ride o2) {
+            return o1.earliestStart-o2.earliestStart;
+        }
+    }
 }
+
