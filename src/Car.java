@@ -4,15 +4,17 @@ public class Car {
     public int x;
     public int y;
     public int freeFrom;
-    public PriorityQueue<Ride> sortedRides;
+    private PriorityQueue<RideWithDistance> sortedRides;
 
     public Car(Collection<Ride> rides){
         x = 0;
         y = 0;
         freeFrom = 0;
-        Comparator<Ride> comparator = new RideComparator();
+        Comparator<RideWithDistance> comparator = new RideComparator();
         sortedRides = new PriorityQueue<>(comparator);
-        sortedRides.addAll(rides);
+        for(Ride r : rides) {
+            sortedRides.add(new RideWithDistance(r,this));
+        }
     }
     public void update(Integer timeStep) {
         sortedRides = sortRides(timeStep);
@@ -20,25 +22,51 @@ public class Car {
     public Integer distanceFrom(int x, int y) {
         return Math.abs(this.x-x) + Math.abs(this.y-y);
     }
+    public Integer distanceFrom(Ride ride) {
+        return Math.abs(this.x-ride.fromX) + Math.abs(this.y-ride.fromY);
+    }
     public Ride getOptimalRide() {
-        return sortedRides.peek();
+        return sortedRides.peek().ride;
     }
 
-    private PriorityQueue<Ride> sortRides(Integer timeStep) {
-        Comparator<Ride> comparator = new RideComparator();
-        PriorityQueue<Ride> sorted = new PriorityQueue<>(comparator);
+    private PriorityQueue<RideWithDistance> sortRides(Integer timeStep) {
+        Comparator<RideWithDistance> comparator1 = new RideComparator();
+        PriorityQueue<RideWithDistance> sorted = new PriorityQueue<>(comparator1);
 
-        for(Ride r : sortedRides) {
-            if(r.earliestStart - timeStep >= this.distanceFrom(r.fromX, r.fromY))
+        for(RideWithDistance r : sortedRides) {
+            if(r.ride.earliestStart - timeStep >= this.distanceFrom(r.ride.fromX, r.ride.fromY))
                 sorted.add(r);
+        }
+
+        if(sorted.isEmpty()) {
+            Comparator<RideWithDistance> comparator2 = new RideComparator2();
+            sorted = new PriorityQueue<>(comparator2);
+            for(RideWithDistance r: sortedRides) {
+                if(distanceFrom(r.ride.fromX,r.ride.fromY) + r.ride.length+timeStep < r.ride.latestFinish)
+                    sorted.add(r);
+            }
         }
 
         return sorted;
     }
-    private class RideComparator implements Comparator<Ride>{
+    private class RideComparator implements Comparator<RideWithDistance>{
         @Override
-        public int compare(Ride o1, Ride o2) {
-            return o1.earliestStart-o2.earliestStart;
+        public int compare(RideWithDistance o1, RideWithDistance o2) {
+            return o1.ride.earliestStart-o2.ride.earliestStart;
+        }
+    }
+    private class RideWithDistance {
+        Integer distance;
+        Ride ride;
+        public RideWithDistance(Ride ride, Car car) {
+            distance = car.distanceFrom(ride);
+            this.ride = ride;
+        }
+    }
+    private class RideComparator2 implements Comparator<RideWithDistance>{
+        @Override
+        public int compare(RideWithDistance o1, RideWithDistance o2) {
+            return o1.distance-o2.distance;
         }
     }
 }
