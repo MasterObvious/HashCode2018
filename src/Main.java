@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.*;
 
 import java.util.List;
@@ -5,16 +6,15 @@ import java.util.Map;
 
 public class Main {
 
-    public static void main(String args[]){
-        System.out.println("It's not stupid");
-
-        Integer hello = 1;
-        synchronized (hello) {
-            hello = hello * 2;
-
-            System.out.println(hello);
+    public static void main(String args[]) throws IOException {
+        Data data = new Data(InputType.FILE_A);
+        List<Car> carList = new ArrayList<>();
+        for (int i = 0; i < data.vehicleNumber; i++){
+            carList.add(new Car(data.rideList));
         }
-        System.out.println("hello");
+        Map<Car,List<Ride>> result = assignRides(carList);
+        data.output(result);
+
     }
 
     private static boolean allCarsFree(List<Car> cars, int timeStep){
