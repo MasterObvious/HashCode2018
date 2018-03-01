@@ -34,40 +34,46 @@ public class Main {
         boolean assignedARide = true;
         //iterate timestep until all rides assigned
         while(assignedARide || !allCarsFree(cars, timeStep)) {
+
             assignedARide = false;
 
             //Get list of available cars
             List<Car> available = new LinkedList<>();
             for (Car c : cars) {
-                if (c.freeFrom <= timeStep) {
-                    c.update(timeStep);
-                    available.add(c);
-                }
+                c.update(timeStep);
+                available.add(c);
             }
+            System.out.println("Time Step: " + timeStep);
+            System.out.println("Number Available: " + available.size());
 
             //assign cars to rides until none left available
             while (!available.isEmpty()) {
                 //find optimum ride to assign
-                int shortestDist = Integer.MAX_VALUE;
-                Ride shortestDistRide = null;
+                int earliestRideTime = Integer.MAX_VALUE;
+                Ride earliestStartRide = null;
                 Car carToAssign = null;
                 for (Car c : available) {
-                    Ride thisShortestDistRide = c.getShortestDistanceRide();
-                    if (thisShortestDistRide.length < shortestDist) {
-                        shortestDist = thisShortestDistRide.length;
-                        shortestDistRide = thisShortestDistRide;
+                    Ride thisEarliestStartRide = c.getShortestDistanceRide();
+                    //handle empty list of rides
+                    if(thisEarliestStartRide == null){
+                        continue;
+                    }
+                    //TODO: consider what to do in ties
+                    if (thisEarliestStartRide.earliestStart < earliestRideTime) {
+                        earliestRideTime = thisEarliestStartRide.earliestStart;
+                        earliestStartRide = thisEarliestStartRide;
                         carToAssign = c;
                     }
                 }
                 //assign this ride
-                if (shortestDistRide != null) {
+                if (earliestStartRide != null) {
                     assignedARide = true;
-                    carToAssign.freeFrom = shortestDist +
-                            carToAssign.distanceFrom(shortestDistRide.fromX, shortestDistRide.fromY);
+                    carToAssign.freeFrom = earliestStartRide.length +
+                            carToAssign.distanceFrom(earliestStartRide.fromX, earliestStartRide.fromY);
 
                     //Store data to return
                     if(assignedRides.containsKey(carToAssign)){
-                        assignedRides.get(carToAssign).add(shortestDistRide);
+                        assignedRides.get(carToAssign).add(earliestStartRide);
                     }else{
                         assignedRides.put(carToAssign, new ArrayList<>());
                     }
@@ -75,12 +81,14 @@ public class Main {
                     //break as all rides assigned
                     break;
                 }
-
                 //remove the ride from lists of potential rides for all cars
                 for (Car c : cars) {
-                    c.sortedRides.remove(shortestDistRide);
+                    c.sortedRides.remove(earliestStartRide);
                 }
             }
+            timeStep++;
+
+            System.out.println();
         }
         return assignedRides;
     }
